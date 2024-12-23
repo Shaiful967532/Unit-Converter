@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-title">Choose a Conversion Category</h1>
+        <div class="categories">
+            <div class="card length-card" onclick="navigateTo('length')">
+                <h2>Length</h2>
+            </div>
+            <div class="card weight-card" onclick="navigateTo('weight')">
+                <h2>Weight</h2>
+            </div>
+            <div class="card temperature-card" onclick="navigateTo('temperature')">
+                <h2>Temperature</h2>
+            </div>
+            <div class="card time-card" onclick="navigateTo('time')">
+                <h2>Time</h2>
+            </div>
+            <div class="card currency-card" onclick="navigateTo('currency')">
+                <h2>Currency</h2>
+            </div>
+        </div>
+    </div>
+    <script>
+        function navigateTo(category) {
+            window.location.href = `converter.html?category=${category}`;
+        }
+    </script>
+</body>
+</html>

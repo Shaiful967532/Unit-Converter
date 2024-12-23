@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <div class="container">
+        <h1 id="pageTitle">Unit Converter</h1>
+        <div class="converter">
+            <div class="input-section">
+                <label for="inputValue">Enter Value:</label>
+                <input type="number" id="inputValue" placeholder="Enter a value">
+            </div>
+            <div class="unit-section">
+                <label for="inputUnit">From:</label>
+                <select id="inputUnit"></select>
+                <label for="outputUnit">To:</label>
+                <select id="outputUnit"></select>
+            </div>
+            <button id="convertBtn" onclick="convert()">Convert</button>
+            <div class="result" id="result">Result: --</div>
+            <button id="backBtn" onclick="goBack()">Back to Categories</button>
+        </div>
+    </div>
+    <script>
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        function getCategoryFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('category');
+        }
+
+        function setUpConverter(category) {
+            const inputUnit = document.getElementById('inputUnit');
+            const outputUnit = document.getElementById('outputUnit');
+            let units = [];
+
+            switch (category) {
+                case 'length':
+                    units = ['Meters', 'Kilometers', 'Miles', 'Centimeters', 'Millimeters'];
+                    break;
+                case 'weight':
+                    units = ['Kilograms', 'Pounds', 'Grams', 'Ounces'];
+                    break;
+                case 'temperature':
+                    units = ['Celsius', 'Fahrenheit', 'Kelvin'];
+                    break;
+                case 'time':
+                    units = ['Seconds', 'Minutes', 'Hours', 'Days'];
+                    break;
+                case 'currency':
+                    units = ['USD', 'EUR', 'GBP', 'INR'];
+                    break;
+                default:
+                    units = [];
+                    break;
+            }
+
+            units.forEach(unit => {
+                const option1 = document.createElement('option');
+                option1.value = unit;
+                option1.textContent = unit;
+                inputUnit.appendChild(option1);
+
+                const option2 = document.createElement('option');
+                option2.value = unit;
+                option2.textContent = unit;
+                outputUnit.appendChild(option2);
+            });
+        }
+
+        function convert() {
+            const inputValue = parseFloat(document.getElementById('inputValue').value);
+            const inputUnit = document.getElementById('inputUnit').value;
+            const outputUnit = document.getElementById('outputUnit').value;
+            let result = 'Invalid input';
+
+            if (!isNaN(inputValue)) {
+                switch (getCategoryFromUrl()) {
+                    case 'length':
+                        result = convertLength(inputValue, inputUnit, outputUnit);
+                        break;
+                    case 'weight':
+                        result = convertWeight(inputValue, inputUnit, outputUnit);
+                        break;
+                    case 'temperature':
+                        result = convertTemperature(inputValue, inputUnit, outputUnit);
+                        break;
+                    case 'time':
+                        result = convertTime(inputValue, inputUnit, outputUnit);
+                        break;
+                    case 'currency':
+                        result = convertCurrency(inputValue, inputUnit, outputUnit);
+                        break;
+                    default:
+                        result = 'Category not supported';
+                        break;
+                }
+            } else {
+                result = 'Please enter a valid number';
+            }
+
+            document.getElementById('result').textContent = `Result: ${result}`;
+        }
+
+
+        function convertLength(value, fromUnit, toUnit) {
+            const conversionRates = {
+                'Meters': 1,
+                'Kilometers': 0.001,
+                'Miles': 0.000621371,
+                'Centimeters': 100,
+                'Millimeters': 1000
+            };
+            return value * conversionRates[toUnit] / conversionRates[fromUnit];
+        }
+
+        function convertWeight(value, fromUnit, toUnit) {
+            const conversionRates = {
+                'Kilograms': 1,
+                'Pounds': 2.20462,
+                'Grams': 1000,
+                'Ounces': 35.274
+            };
+            return value * conversionRates[toUnit] / conversionRates[fromUnit];
+        }
+
+        function convertTemperature(value, fromUnit, toUnit) {
+            if (fromUnit === toUnit) return value;
+
+            if (fromUnit === 'Celsius') {
+                if (toUnit === 'Fahrenheit') return value * 9/5 + 32;
+                if (toUnit === 'Kelvin') return value + 273.15;
+            }
+            if (fromUnit === 'Fahrenheit') {
+                if (toUnit === 'Celsius') return (value - 32) * 5/9;
+                if (toUnit === 'Kelvin') return (value - 32) * 5/9 + 273.15;
+            }
+            if (fromUnit === 'Kelvin') {
+                if (toUnit === 'Celsius') return value - 273.15;
+                if (toUnit === 'Fahrenheit') return (value - 273.15) * 9/5 + 32;
+            }
+        }
+
+        function convertTime(value, fromUnit, toUnit) {
+            const conversionRates = {
+                'Seconds': 1,
+                'Minutes': 60,
+                'Hours': 3600,
+                'Days': 86400
+            };
+            return value * conversionRates[toUnit] / conversionRates[fromUnit];
+        }
+
+        function convertCurrency(value, fromUnit, toUnit) {
+            const conversionRates = {
+                'USD': 1,
+                'EUR': 0.93,
+                'GBP': 0.82,
+                'INR': 83.62
+            };
+            return value * conversionRates[toUnit] / conversionRates[fromUnit];
+        }
+
+        window.onload = function() {
+            const category = getCategoryFromUrl();
+            document.getElementById('pageTitle').textContent = `${category.charAt(0).toUpperCase() + category.slice(1)} Converter`;
+            setUpConverter(category);
+        };
+    </script>
+</body>
+</html>
